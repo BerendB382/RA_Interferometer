@@ -24,7 +24,7 @@ def digitize(real_sequence: np.ndarray, nrbits: int = 8):
     result[result > maxpos] = maxpos
     return result
 
-def simple_real_cross_power(ant_1_voltage, ant_2_voltage, nrbits: int = 4):
+def simple_real_cross_power(ant_1_voltage, ant_2_voltage, nrbits: int = 8):
     s1 = digitize(ant_1_voltage, nrbits=nrbits)
     s2 = digitize(ant_2_voltage, nrbits=nrbits)
     return sp.signal.correlate(s1, s2, mode='same') / s1.shape[0]
@@ -50,9 +50,13 @@ def main():
     
     config = vars(args)
     
+
     measurement_path = os.path.join(os.path.dirname(__file__), config['folder'])
-    files = glob.glob(os.path.join(measurement_path, '*')) 
-    data = np.concatenate([np.fromfile(file, dtype=np.float64) for file in files])
+    # measurement_path = '/Volumes/USB SSD/INTERFEROMETER data/'
+    print(os.listdir(measurement_path))
+    files = glob.glob(measurement_path + '*', recursive=True)
+    print(files)
+    data = np.concatenate([np.fromfile(fil, dtype=np.complex64) for fil in files])
 
     # Sample interval calculation
     delta_freq = 10e6 
